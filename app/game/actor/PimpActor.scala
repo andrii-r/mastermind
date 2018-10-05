@@ -6,7 +6,7 @@ import clients.actors.{AttachClient, ClientAttached}
 class PimpActor extends Actor with ActorLogging {
 
   private var clientPairs: List[(ActorRef, ActorRef)] = List.empty
-  private var awaytingClient: Option[ActorRef] = _
+  private var awaytingClient: Option[ActorRef] = None
 
   override def receive: Receive = {
     case ac: AttachClient =>

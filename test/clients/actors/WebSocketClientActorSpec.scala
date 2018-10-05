@@ -5,7 +5,7 @@ import akka.testkit.{ImplicitSender, TestKit}
 import org.scalatest.{BeforeAndAfterAll, FlatSpecLike, Matchers}
 import org.scalatest.mockito.MockitoSugar
 
-class WebSocketClientActorTest extends TestKit(ActorSystem("MasterMindActorTest")) with FlatSpecLike
+class WebSocketClientActorSpec extends TestKit(ActorSystem("MasterMindActorTest")) with FlatSpecLike
   with Matchers
   with BeforeAndAfterAll
   with ImplicitSender
