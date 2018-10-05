@@ -1,5 +1,6 @@
 package org.mastermind.client.actors
 
+import org.mastermind.web.WsAttach
 import org.scalatestplus.play.PlaySpec
 
 class MasterMindControllerSpec extends PlaySpec with WsSpec {

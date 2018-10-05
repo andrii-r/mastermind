@@ -1,4 +1,4 @@
-package org.mastermind.controllers
+package org.mastermind.web.controllers
 
 import javax.inject._
 import play.api.mvc._

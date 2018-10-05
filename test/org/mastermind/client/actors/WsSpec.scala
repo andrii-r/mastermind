@@ -4,6 +4,7 @@ import java.util.concurrent.{ArrayBlockingQueue, Callable}
 import java.util.function.Consumer
 
 import org.awaitility.Awaitility.await
+import org.mastermind.web.{WsInbound, WsOutbound}
 import org.scalatest.concurrent.PatienceConfiguration.Timeout
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{Args, Status, TestSuite}

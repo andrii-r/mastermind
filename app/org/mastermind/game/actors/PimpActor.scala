@@ -1,7 +1,7 @@
 package org.mastermind.game.actors
 
 import akka.actor.{Actor, ActorLogging, ActorRef}
-import org.mastermind.client.actors.{AttachClient, ClientAttached}
+import org.mastermind.web.{AttachClient, ClientAttached}
 
 class PimpActor extends Actor with ActorLogging {
 
@@ -14,7 +14,7 @@ class PimpActor extends Actor with ActorLogging {
         awaytingClient = Some(sender())
       }
 
-      sender() ! ClientAttached()
+      sender() ! ClientAttached(ac.playerName)
     case _ =>
   }
 }
