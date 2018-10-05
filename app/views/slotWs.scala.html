@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Preved web socket</title>
+  </head>
+  <body scrolling="no" >
+    <script type="text/javascript">
+        window.onload = function () {
+
+          var isFun = false;
+          // Get references to elements on the page.
+          var form = document.querySelector('#message-form');
+          var gameIdField = document.querySelector('#gameId');
+          var actionField = document.querySelector('#action');
+          var betField = document.querySelector('#bet');
+          var lineField = document.querySelector('#line');
+          var operatorIdField = document.querySelector('#operatorId');
+          var sessionKeyField = document.querySelector('#sessionKey');
+          var channelField = document.querySelector('#channel');
+          var messagesList = document.querySelector('#messages');
+          var socketStatus = document.querySelector('#status');
+          var closeBtn = document.querySelector('#close');
+          var connectBtn = document.querySelector('#connect');
+          var cleanBtn = document.querySelector('#clean');
+          var serverUrlField = document.querySelector('#serverUrl');
+
+          if (!serverUrlField.value) {
+            var storedUrl = window.localStorage.getItem("tain-server-url");
+            var fallbackUrl;
+            if (isFun) {
+              fallbackUrl = "wss://pages-dev.tain.com/tain-nxt/fun/game/ws/slot/api";
+            } else {
+              fallbackUrl = "wss://pages-dev.tain.com/tain-nxt/real/game/ws/slot/api";
+            }
+            serverUrlField.value = storedUrl || fallbackUrl;
+          }
+
+          if (isFun && !sessionKeyField.value) {
+            sessionKeyField.value = guid();
+          }
+
+          var socket = null;
+
+          var initConnection = function () {
+
+            if (socket != null) {
+              socket.close();
+            }
+
+            if (socket != null && socket.readyState === 0) {
+              socketStatus.innerHTML = 'Connecting';
+              socketStatus.className = 'open';
+              return false;
+            }
+            var url = serverUrlField.value || 'ws://localhost:9000/tain-nxt/pages/game/ws/slot/api';
+            window.localStorage.setItem("tain-server-url", url);
+            socket = new WebSocket(url);
+
+            // Handle any errors that occur.
+            socket.onerror = function (error) {
+              console.log('WebSocket Error: ' + error);
+            };
+
+            // Show a connected message when the WebSocket is opened.
+            socket.onopen = function (event) {
+              socketStatus.innerHTML = 'Connected';
+              socketStatus.className = 'open';
+            };
+
+            // Handle messages sent by the server.
+            socket.onmessage = function (event) {
+              var message = event.data;
+              var rs = JSON.parse(message);
+              message = "<pre>" + JSON.stringify(rs, undefined, 2) + "</pre>";
+              messagesList.innerHTML += '<li class="received"><span>Received:</span>' +
+                  message + '</li>';
+              
+              handleResponse(rs);
+              // Scroll down
+              var element = document.getElementById("messages");
+              element.scrollTop = element.scrollHeight - element.clientHeight;
+            };
+
+            // Show a disconnected message when the WebSocket is closed.
+            socket.onclose = function (event) {
+              socketStatus.innerHTML = 'Disconnected from WebSocket.';
+              socketStatus.className = 'closed';
+            };
+            return false;
+          } ;
+
+          function handleResponse(rs) {
+            rs.forEach(function (item) {
+              switch (item.name) {
+                case "ping":
+                  sendMsg("pong")
+                  break;
+                case "init-mode":
+                case "goto-mode":
+                  actionField.value = item.payload;
+                  break;
+              }
+
+            });
+
+          }
+
+          // Create a new WebSocket.
+          connectBtn.onclick = function (ev) {
+            ev.preventDefault();
+            initConnection.apply(this)
+          };
+
+          function sendMsg(msg) {
+            var message = {};
+            message.name = msg;
+            switch (message.name) {
+              case "attach":
+                message.gameId = gameIdField.value;
+                message.operatorId = operatorIdField.value;
+                message.channel = channelField.value;
+                message.sessionKey = sessionKeyField.value || '';
+                break;
+              case "spin":
+                message.bet = parseInt(betField.value);
+                message.lines = [parseInt(lineField.value)];
+                break;
+              case "free-spin":
+              case "detach":
+              case "pong":
+                break;
+            }
+            // message.gameId = gameIdField.value;
+
+            // Send the message through the WebSocket.
+            socket.send(JSON.stringify(message));
+
+            // Add the message to the messages list.
+            message = "<pre>" + JSON.stringify(message, undefined, 2) + "</pre>";
+            messagesList.innerHTML += '<li class="sent"><span>Sent:</span>' + message +
+                '</li>';
+
+            // Scroll down
+            var element = document.getElementById("messages");
+            element.scrollTop = element.scrollHeight - element.clientHeight;
+          }
+
+          // Send a message when the form is submitted.
+          form.onsubmit = function (e) {
+            e.preventDefault();
+
+            if (socket == null || socket.readyState === 3) {
+              socketStatus.innerHTML = 'WebSocket is Closed';
+              socketStatus.className = 'closed';
+              socketStatus.innerHTML = 'Trying to connect, please try when connection will be established';
+              initConnection.apply(this);
+              return false;
+            }
+
+            // Retrieve the message from the textarea.
+            sendMsg(actionField.value);
+            return false;
+          };
+
+          // Close the WebSocket connection when the close button is clicked.
+          closeBtn.onclick = function (e) {
+            e.preventDefault();
+
+            // Close the WebSocket.
+            socket.close();
+
+            return false;
+          };
+
+          cleanBtn.onclick = function (e) {
+            e.preventDefault();
+
+            // clean results.
+            messagesList.innerHTML = "";
+
+            return false;
+          };
+
+          if (isFun) {
+            var newSessionBtn = document.querySelector('#newSession');
+            newSessionBtn.onclick = function (e) {
+              e.preventDefault();
+              sessionKeyField.value = guid();
+              return false;
+            };
+          }
+
+          function guid() {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+              var r = Math.random() * 16 | 0,
+                  v = c == 'x' ? r : (r & 0x3 | 0x8);
+              return v.toString(16);
+            });
+          }
+
+        };
+
+
+    </script>
+
+    <div id="page-wrapper">
+      <h1>WebSockets Demo</h1>
+
+      <div id="status">Connecting...</div>
+      <form id="message-form" action="#" method="post">
+
+        <ul>
+          <li>
+            <div>
+              <label for="serverUrl">Server url</label>
+              <input id="serverUrl" type="text" placeholder="ws server url" />
+            </div>
+          </li>
+          <li>
+            <div>
+              <label for="gameId">Game id</label>
+              <select id="gameId">
+              </select>
+            </div>
+          </li>
+          <li>
+            <div>
+              <label for="operatorId">Operator id</label>
+              <select id="operatorId">
+              </select>
+            </div>
+          </li>
+          <li>
+            <div>
+              <label for="sessionKey">player session</label>
+              <input id="sessionKey" type="text" placeholder="player session" value=""/>
+            </div>
+          </li>
+          <li>
+            <div>
+              <label for="channel">channel</label>
+              <select id="channel">
+                <option value="desktop.html5" selected="selected" >Desktop</option>
+                <option value="mobile">Mobile</option>
+              </select>
+            </div>
+          </li>
+          <li>
+            <div>
+              <label for="action">Action</label>
+              <select id="action">
+                <option value="attach" selected="selected" >attach</option>
+                <option value="detach" >detach</option>
+                <option value="spin">spin</option>
+                <option value="free-spin">free-spin</option>
+              </select>
+            </div>
+          </li>
+          <li>
+            <div>
+              <label for="bet">Bet</label>
+              <input id="bet" type="text" placeholder="bet" value="100"/>
+            </div>
+          </li>
+          <li>
+            <div>
+              <label for="line">Line</label>
+              <input id="line" type="text" placeholder="line" value="0"/>
+            </div>
+          </li>
+        </ul>
+        <button type="submit">Action</button>
+        <button type="button" id="close">Close Connection</button>
+        <button type="button" id="connect">Reconnection</button>
+        <button type="button" id="clean">Clean</button>
+      </form>
+      <div id="message-content">
+        <ul id="messages"></ul>
+      </div>
+    </div>
+
+  </body>
+</html>
