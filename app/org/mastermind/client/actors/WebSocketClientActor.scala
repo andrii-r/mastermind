@@ -1,4 +1,4 @@
-package clients.actors
+package org.mastermind.client.actors
 
 import akka.actor.{Actor, ActorRef, Props}
 import play.api.libs.json._

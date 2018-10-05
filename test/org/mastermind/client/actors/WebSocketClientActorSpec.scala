@@ -1,4 +1,4 @@
-package clients.actors
+package org.mastermind.client.actors
 
 import akka.actor.ActorSystem
 import akka.testkit.{ImplicitSender, TestKit}

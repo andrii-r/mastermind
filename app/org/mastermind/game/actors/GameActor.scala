@@ -1,4 +1,4 @@
-package game.actor
+package org.mastermind.game.actors
 
 import akka.actor.{Actor, ActorLogging}
 

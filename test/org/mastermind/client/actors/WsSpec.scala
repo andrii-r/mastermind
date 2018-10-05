@@ -1,4 +1,4 @@
-package clients.actors
+package org.mastermind.client.actors
 
 import java.util.concurrent.{ArrayBlockingQueue, Callable}
 import java.util.function.Consumer

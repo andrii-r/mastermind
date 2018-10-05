@@ -1,10 +1,10 @@
-package controllers
+package org.mastermind.controllers
 
 import akka.actor.{ActorRef, ActorSystem}
 import akka.stream.Materializer
-import clients.actors.{WebSocketClientActor, WsInbound, WsOutbound}
 import com.google.inject.name.Named
 import com.google.inject.{Inject, Singleton}
+import org.mastermind.client.actors.{WebSocketClientActor, WsInbound, WsOutbound}
 import play.api.libs.streams.ActorFlow
 import play.api.mvc.WebSocket.MessageFlowTransformer
 import play.api.mvc._

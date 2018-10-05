@@ -1,7 +1,7 @@
-package game.actor
+package org.mastermind.game.actors
 
 import akka.actor.{Actor, ActorLogging, ActorRef}
-import clients.actors.{AttachClient, ClientAttached}
+import org.mastermind.client.actors.{AttachClient, ClientAttached}
 
 class PimpActor extends Actor with ActorLogging {
 

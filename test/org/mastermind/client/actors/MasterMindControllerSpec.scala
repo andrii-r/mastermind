@@ -1,4 +1,4 @@
-package clients.actors
+package org.mastermind.client.actors
 
 import org.scalatestplus.play.PlaySpec
 
