@@ -18,8 +18,10 @@ class PimpActor extends Actor with ActorLogging {
 
   override def receive: Receive = {
     case ac: AttachClient =>
+      log.info(s"PimpActor received message from $sender")
       sender() ! ClientAttached(ac.playerName)
     case rg: RequestGame =>
+      log.info(s"PimpActor received message from $sender")
       if (awaytingClient.isEmpty) {
         awaytingClient = Some(sender())
         sender() ! WaitingForPartner(rg.playerName)

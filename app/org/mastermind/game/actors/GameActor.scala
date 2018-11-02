@@ -15,6 +15,10 @@ object GameActor {
 
 class GameActor extends Actor with ActorLogging {
 
+  override def preStart(): Unit = {
+    log.info("GameActor started")
+  }
+
   var firstPlayer: ActorRef = _
   var secondPlayer: ActorRef = _
 
@@ -25,8 +29,10 @@ class GameActor extends Actor with ActorLogging {
       firstPlayer = first
       secondPlayer = second
 
-      firstPlayer ! GameStarted
-      secondPlayer ! GameStarted
+      log.info("send commands to socket client actors!!!")
+
+      firstPlayer ! GameStarted("mazefaka1")
+      secondPlayer ! GameStarted("mazefaka2")
 
     case _ =>
   }

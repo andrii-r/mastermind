@@ -1,5 +1,7 @@
 package org.mastermind.web.controllers
 
+import java.util.UUID
+
 import akka.actor.{ActorRef, ActorSystem}
 import akka.stream.Materializer
 import com.google.inject.name.Named
@@ -20,7 +22,8 @@ class GameController @Inject()(@Named("pimp-actor") pimpActor: ActorRef, cc: Con
 
   def socket: WebSocket = WebSocket.accept[WsInbound, WsOutbound] { _ =>
     ActorFlow.actorRef { out =>
-      WebSocketClientActor.props(pimpActor, out)
+      val uuid = UUID.randomUUID().toString
+      WebSocketClientActor.props(pimpActor, out, uuid)
     }
   }
 }
