@@ -4,12 +4,12 @@
 # ~~~~
 
 # An example controller showing a sample home page
-GET        /                    org.mastermind.controllers.HomeController.index
+GET        /                    org.mastermind.web.controllers.HomeController.index
 
 # Map static resources from the /public folder to the /assets URL path
 GET        /assets/*file        controllers.Assets.versioned(path="/public", file: Asset)
 
 
-GET        /slotWs              org.mastermind.controllers.HomeController.slotWs
+GET        /slotWs              org.mastermind.web.controllers.HomeController.slotWs
 
-GET        /ws                  org.mastermind.controllers.GameController.socket
+GET        /ws                  org.mastermind.web.controllers.GameController.socket

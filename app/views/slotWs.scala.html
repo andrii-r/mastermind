@@ -28,9 +28,9 @@
             var storedUrl = window.localStorage.getItem("tain-server-url");
             var fallbackUrl;
             if (isFun) {
-              fallbackUrl = "wss://pages-dev.tain.com/tain-nxt/fun/game/ws/slot/api";
+              fallbackUrl = "ws://localhost:9000/ws";
             } else {
-              fallbackUrl = "wss://pages-dev.tain.com/tain-nxt/real/game/ws/slot/api";
+              fallbackUrl = "ws://localhost:9000/ws";
             }
             serverUrlField.value = storedUrl || fallbackUrl;
           }
@@ -52,7 +52,7 @@
               socketStatus.className = 'open';
               return false;
             }
-            var url = serverUrlField.value || 'ws://localhost:9000/tain-nxt/pages/game/ws/slot/api';
+            var url = serverUrlField.value || 'ws://localhost:9000/ws';
             window.localStorage.setItem("tain-server-url", url);
             socket = new WebSocket(url);
 
@@ -74,7 +74,7 @@
               message = "<pre>" + JSON.stringify(rs, undefined, 2) + "</pre>";
               messagesList.innerHTML += '<li class="received"><span>Received:</span>' +
                   message + '</li>';
-              
+
               handleResponse(rs);
               // Scroll down
               var element = document.getElementById("messages");
